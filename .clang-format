@@ -30,5 +30,5 @@ BraceWrapping:
   SplitEmptyNamespace: false
 BreakConstructorInitializers: BeforeColon
 AllowAllConstructorInitializersOnNextLine: false
-cmake -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+# cmake -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 # ln -sF build/compile_commands.json .

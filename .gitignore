@@ -42,3 +42,6 @@
 
 # build folder
 build/
+
+# json for nvim
+compile_commands.json
