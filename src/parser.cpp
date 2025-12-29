@@ -1,5 +1,7 @@
 #include "parser.h"
 
+#include <cctype>
+
 namespace ch = std::chrono;
 using std::get_time;
 using std::getline;
@@ -10,30 +12,43 @@ using std::stringstream;
 using std::tm;
 using std::vector;
 
+bool has_letters(const std::string& str)
+{
+    for (unsigned char c : str)
+        if (std::isalpha(c))
+            return true;
+
+    return false;
+}
+
 ch::time_point<ch::system_clock> parse_timestamp(const string& timestamp)
 {
-    size_t time_zone_pos = timestamp.find_last_of("+-");
-    if (time_zone_pos == string::npos)
+    if (has_letters(timestamp))
         return {};
 
-    string main_part = timestamp.substr(0, time_zone_pos);
-    int timezone_offset_hours = stoi(timestamp.substr(time_zone_pos));
-
-    size_t millisecond_pos = main_part.find('.');
-    if (millisecond_pos == string::npos)
+    size_t tz_pos = timestamp.find_last_of("+-");
+    if (tz_pos == string::npos)
         return {};
 
-    string date_time_part = timestamp.substr(0, millisecond_pos);
-    int milliseconds = stoi(main_part.substr(millisecond_pos + 1));
+    int tz_offset_hours = stoi(timestamp.substr(tz_pos));
 
-    tm tm{};
-    stringstream stream(date_time_part);
-    stream >> get_time(&tm, "%m/%d/%Y/%H/%M/%S");
+    string main_part = timestamp.substr(0, tz_pos);
 
-    time_t time = mktime(&tm);
+    size_t ms_pos = main_part.find('.');
+    if (ms_pos == string::npos)
+        return {};
+
+    string datetime_part = timestamp.substr(0, ms_pos);
+    int ms = stoi(main_part.substr(ms_pos + 1));
+
+    tm time_struct{};
+    stringstream stream{ datetime_part };
+    stream >> get_time(&time_struct, "%m/%d/%Y/%H/%M/%S");
+
+    time_t time = mktime(&time_struct);
     auto time_point = ch::system_clock::from_time_t(time);
-    time_point += ch::milliseconds(milliseconds);
-    time_point -= ch::hours(timezone_offset_hours);
+    time_point += ch::milliseconds(ms);
+    time_point -= ch::hours(tz_offset_hours);
 
     return time_point;
 }
@@ -43,33 +58,33 @@ CombatEvent parse_line(const string& line)
     if (line.empty())
         return CombatEvent{};
 
-    string part;
-    vector<string> parts;
-    stringstream stream(line);
-    CombatEvent Combat_Event;
+    string field{};
+    vector<string> data{};
+    stringstream stream{ line };
+    CombatEvent event{};
 
-    while (getline(stream, part, ','))
-        parts.push_back(part);
+    while (getline(stream, field, ','))
+        data.push_back(field);
 
-    if (parts.size() < 10)
+    if (data.size() < 10)
         return {};
 
-    size_t space_pos = parts[0].find("  ");
+    size_t space_pos = data[0].find("  ");
     if (space_pos != string::npos) {
-        string timestamp_str = parts[0].substr(0, space_pos);
-        Combat_Event.time_stamp = parse_timestamp(timestamp_str);
-        Combat_Event.event_type = parts[0].substr(space_pos + 2);
+        string timestamp_str = data[0].substr(0, space_pos);
+        event.time_stamp = parse_timestamp(timestamp_str);
+        event.event_type = data[0].substr(space_pos + 2);
     }
 
-    stringstream name_stream(parts[2]);
-    string player_name;
+    stringstream name_stream{ data[2] };
+    string player_name{};
     getline(name_stream, player_name, '-');
 
-    Combat_Event.name = player_name;
-    Combat_Event.source_id = parts[1];
-    Combat_Event.source_raid_flag = parts[3];
-    Combat_Event.target_id = parts[5];
-    Combat_Event.spell_name = parts[10];
+    event.name = player_name;
+    event.source_id = data[1];
+    event.source_raid_flag = data[3];
+    event.target_id = data[5];
+    event.spell_name = data[10];
 
-    return Combat_Event;
+    return event;
 }
