@@ -13,7 +13,7 @@ using std::stringstream;
 using std::tm;
 using std::vector;
 
-bool has_letters(const std::string& str)
+bool HasLetters(const std::string& str)
 {
     for (unsigned char c : str)
         if (std::isalpha(c))
@@ -22,9 +22,9 @@ bool has_letters(const std::string& str)
     return false;
 }
 
-ch::time_point<ch::system_clock> parse_timestamp(const string& timestamp)
+ch::time_point<ch::system_clock> ParseTimestamp(const string& timestamp)
 {
-    if (has_letters(timestamp))
+    if (HasLetters(timestamp))
         return {};
 
     size_t tz_pos = timestamp.find_last_of("+-");
@@ -54,7 +54,7 @@ ch::time_point<ch::system_clock> parse_timestamp(const string& timestamp)
     return time_point;
 }
 
-CombatEvent parse_line(const string& line)
+CombatEvent ParseLine(const string& line)
 {
     if (line.empty())
         return CombatEvent{};
@@ -73,7 +73,7 @@ CombatEvent parse_line(const string& line)
     size_t space_pos = data[0].find("  ");
     if (space_pos != string::npos) {
         string timestamp_str = data[0].substr(0, space_pos);
-        event.time_stamp = parse_timestamp(timestamp_str);
+        event.time_stamp = ParseTimestamp(timestamp_str);
         event.event_type = data[0].substr(space_pos + 2);
     }
 

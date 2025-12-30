@@ -23,7 +23,7 @@ struct CombatEvent {
     }
 };
 
-CombatEvent parse_line(const std::string& string);
-std::chrono::time_point<std::chrono::system_clock> parse_timestamp(const std::string&);
+CombatEvent ParseLine(const std::string& string);
+std::chrono::time_point<std::chrono::system_clock> ParseTimestamp(const std::string&);
 
 #endif  // SHOTCALLERCPP_PARSER_H
