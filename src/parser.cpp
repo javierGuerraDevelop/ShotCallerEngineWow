@@ -1,6 +1,7 @@
 #include "parser.h"
 
 #include <cctype>
+#include <string>
 
 namespace ch = std::chrono;
 using std::get_time;
@@ -79,12 +80,17 @@ CombatEvent parse_line(const string& line)
     stringstream name_stream{ data[2] };
     string player_name{};
     getline(name_stream, player_name, '-');
+    player_name.erase(std::remove(player_name.begin(), player_name.end(), '\"'), player_name.end());
 
     event.name = player_name;
     event.source_id = data[1];
     event.source_raid_flag = data[3];
     event.target_id = data[5];
-    event.spell_name = data[10];
+
+    std::string spell_name = data[10];
+    spell_name.erase(std::remove(spell_name.begin(), spell_name.end(), '\"'), spell_name.end());
+    event.spell_name = spell_name;
+    event.spell_id = std::stoi(data[9]);
 
     return event;
 }
