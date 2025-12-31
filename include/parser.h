@@ -14,20 +14,22 @@ struct CombatEvent {
     std::string spell_name;
     int spell_id;
 
-    bool operator==(const CombatEvent& other) const
-    {
-        return (time_stamp == other.time_stamp) && (event_type == other.event_type) &&
-               (player_name == other.player_name) && (source_id == other.source_id) &&
-               (target_id == other.target_id) && (source_raid_flag == other.source_raid_flag) &&
+    bool operator==(const CombatEvent& other) const {
+        return (time_stamp == other.time_stamp) &&
+               (event_type == other.event_type) &&
+               (player_name == other.player_name) &&
+               (source_id == other.source_id) &&
+               (target_id == other.target_id) &&
+               (source_raid_flag == other.source_raid_flag) &&
                (spell_name == other.spell_name) && (spell_id == other.spell_id);
     }
 };
 
 CombatEvent ParseLine(const std::string& string);
-std::chrono::time_point<std::chrono::system_clock> ParseTimestamp(const std::string&);
+std::chrono::time_point<std::chrono::system_clock> ParseTimestamp(
+    const std::string&);
 
-inline std::ostream& operator<<(std::ostream& os, const CombatEvent& event)
-{
+inline std::ostream& operator<<(std::ostream& os, const CombatEvent& event) {
     os << "CombatEvent {\n"
        << "  event_type: \"" << event.event_type << "\",\n"
        << "  name: \"" << event.player_name << "\",\n"

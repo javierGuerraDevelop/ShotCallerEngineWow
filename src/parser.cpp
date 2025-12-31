@@ -3,43 +3,51 @@
 #include "constants.h"
 
 namespace ch = std::chrono;
-using std::get_time;
-using std::getline;
-using std::mktime;
-using std::stoi;
-using std::string;
-using std::stringstream;
-using std::tm;
-using std::vector;
 
-ch::time_point<ch::system_clock> ParseTimestamp(const string& timestamp)
-{
+bool IsOnlyCharacters(std::string_view str) {
+    for (char c : str) {
+        if (c == ' ') {
+            continue;
+        }
+
+        if (!isalpha(c)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+ch::time_point<ch::system_clock> ParseTimestamp(const std::string& timestamp) {
     // make sure we dont have letters
     for (unsigned char c : timestamp) {
-        if (std::isalpha(c))
+        if (std::isalpha(c)) {
             return {};
+        }
     }
 
     size_t tz_pos = timestamp.find_last_of("+-");
-    if (tz_pos == string::npos)
+    if (tz_pos == std::string::npos) {
         return {};
+    }
 
-    int tz_offset_hours = stoi(timestamp.substr(tz_pos));
+    int tz_offset_hours = std::stoi(timestamp.substr(tz_pos));
 
-    string main_part = timestamp.substr(0, tz_pos);
+    std::string main_part = timestamp.substr(0, tz_pos);
 
     size_t ms_pos = main_part.find('.');
-    if (ms_pos == string::npos)
+    if (ms_pos == std::string::npos) {
         return {};
+    }
 
-    string datetime_part = timestamp.substr(0, ms_pos);
-    int ms = stoi(main_part.substr(ms_pos + 1));
+    std::string datetime_part = timestamp.substr(0, ms_pos);
+    int ms = std::stoi(main_part.substr(ms_pos + 1));
 
-    tm time_struct{};
-    stringstream stream{ datetime_part };
-    stream >> get_time(&time_struct, "%m/%d/%Y/%H/%M/%S");
+    std::tm time_struct{};
+    std::stringstream stream{datetime_part};
+    stream >> std::get_time(&time_struct, "%m/%d/%Y/%H/%M/%S");
 
-    time_t time = mktime(&time_struct);
+    time_t time = std::mktime(&time_struct);
     auto time_point = ch::system_clock::from_time_t(time);
     time_point += ch::milliseconds(ms);
     time_point -= ch::hours(tz_offset_hours);
@@ -47,49 +55,56 @@ ch::time_point<ch::system_clock> ParseTimestamp(const string& timestamp)
     return time_point;
 }
 
-CombatEvent ParseLine(const string& line)
-{
-    if (line.empty())
+CombatEvent ParseLine(const std::string& line) {
+    if (line.empty()) {
         return CombatEvent{};
+    }
 
-    string field{};
-    vector<string> data{};
-    stringstream stream{ line };
+    std::string field{};
+    std::vector<std::string> data{};
+    std::stringstream stream{line};
     CombatEvent event{};
 
-    while (getline(stream, field, ','))
+    while (std::getline(stream, field, ',')) {
         data.push_back(field);
+    }
 
-    if (data.size() < 10)
+    if (data.size() < 10) {
         return {};
+    }
 
     size_t space_pos = data[0].find("  ");
-    if (space_pos != string::npos) {
-        string timestamp_str = data[0].substr(0, space_pos);
+    if (space_pos != std::string::npos) {
+        std::string timestamp_str = data[0].substr(0, space_pos);
         event.time_stamp = ParseTimestamp(timestamp_str);
         event.event_type = data[0].substr(space_pos + 2);
     }
 
-    if (Constants::IsIgnorableEvent(event.event_type))
+    if (Constants::IsIgnorableEvent(event.event_type)) {
         return {};
-
-    stringstream name_stream{ data[2] };
-    string player_name{};
-    getline(name_stream, player_name, '-');
-    player_name.erase(std::remove(player_name.begin(), player_name.end(), '\"'), player_name.end());
-
-    event.player_name = player_name;
-    for (char c : event.player_name) {
-        if (!isalpha(c))
-            return {};
     }
 
+    std::stringstream name_stream{data[2]};
+    std::string player_name{};
+    std::getline(name_stream, player_name, '-');
+    player_name.erase(std::remove(player_name.begin(), player_name.end(), '\"'),
+                      player_name.end());
+    if (!IsOnlyCharacters(player_name)) {
+        return {};
+    }
+
+    event.player_name = player_name;
     event.source_id = data[1];
     event.source_raid_flag = data[3];
     event.target_id = data[5];
 
     std::string spell_name = data[10];
-    spell_name.erase(std::remove(spell_name.begin(), spell_name.end(), '\"'), spell_name.end());
+    spell_name.erase(std::remove(spell_name.begin(), spell_name.end(), '\"'),
+                     spell_name.end());
+    if (!IsOnlyCharacters(spell_name)) {
+        return {};
+    }
+
     event.spell_name = spell_name;
     event.spell_id = std::stoi(data[9]);
 
