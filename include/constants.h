@@ -131,7 +131,7 @@ constexpr std::chrono::seconds GetInterruptCd(std::string_view player_class)
     return {};
 }
 
-enum class CcEnum : size_t {
+enum CcEnum : size_t {
     CLASS_NAME = 0,
     SPELL_NAME = 1,
     SPELL_ID = 2,

@@ -1,5 +1,7 @@
 #include "parser.h"
 
+#include "constants.h"
+
 namespace ch = std::chrono;
 using std::get_time;
 using std::getline;
@@ -10,20 +12,13 @@ using std::stringstream;
 using std::tm;
 using std::vector;
 
-bool HasLetters(const std::string& str)
-{
-    for (unsigned char c : str) {
-        if (std::isalpha(c))
-            return true;
-    }
-
-    return false;
-}
-
 ch::time_point<ch::system_clock> ParseTimestamp(const string& timestamp)
 {
-    if (HasLetters(timestamp))
-        return {};
+    // make sure we dont have letters
+    for (unsigned char c : timestamp) {
+        if (std::isalpha(c))
+            return {};
+    }
 
     size_t tz_pos = timestamp.find_last_of("+-");
     if (tz_pos == string::npos)
@@ -75,12 +70,20 @@ CombatEvent ParseLine(const string& line)
         event.event_type = data[0].substr(space_pos + 2);
     }
 
+    if (Constants::IsIgnorableEvent(event.event_type))
+        return {};
+
     stringstream name_stream{ data[2] };
     string player_name{};
     getline(name_stream, player_name, '-');
     player_name.erase(std::remove(player_name.begin(), player_name.end(), '\"'), player_name.end());
 
     event.player_name = player_name;
+    for (char c : event.player_name) {
+        if (!isalpha(c))
+            return {};
+    }
+
     event.source_id = data[1];
     event.source_raid_flag = data[3];
     event.target_id = data[5];
