@@ -32,7 +32,7 @@ constexpr std::string_view GetClassFromIdentifyingSpells(int spell_id)
     return "";
 }
 
-inline constexpr std::array<std::string_view, 48> ignorable_events{
+inline constexpr std::array<std::string_view, 40> valid_events{
     "SWING_DAMAGE",
     "SWING_MISSED",
     "RANGE_DAMAGE",
@@ -49,13 +49,10 @@ inline constexpr std::array<std::string_view, 48> ignorable_events{
     "SPELL_CREATE",
     "SPELL_DAMAGE",
     "SPELL_DISPEL_FAILED",
-    "SPELL_HEAL",
-    "SPELL_HEAL_ABSORBED",
     "SPELL_INSTAKILL",
     "SPELL_INTERRUPT",
     "SPELL_LEECH",
     "SPELL_MISSED",
-    "SPELL_RESURRECT",
     "SPELL_STOLEN",
     "SPELL_SUMMON",
     "SPELL_EMPOWER_START",
@@ -64,7 +61,6 @@ inline constexpr std::array<std::string_view, 48> ignorable_events{
     "SPELL_PERIODIC_DAMAGE",
     "SPELL_PERIODIC_DRAIN",
     "SPELL_PERIODIC_ENERGIZE",
-    "SPELL_PERIODIC_HEAL",
     "SPELL_PERIODIC_LEECH",
     "SPELL_PERIODIC_MISSED",
     "SPELL_BUILDING_DAMAGE",
@@ -73,24 +69,20 @@ inline constexpr std::array<std::string_view, 48> ignorable_events{
     "DAMAGE_SHIELD",
     "DAMAGE_SHIELD_MISSED",
     "DAMAGE_SPLIT",
-    "ENCHANT_APPLIED",
-    "ENCHANT_REMOVED",
     "PARTY_KILL",
     "UNIT_DIED",
     "UNIT_DESTROYED",
     "UNIT_DISSIPATES",
-    "DURABILITY_DAMAGE",
-    "DURABILITY_DAMAGE_ALL",
 };
 
 constexpr bool IsIgnorableEvent(std::string_view event)
 {
-    for (const auto& item : ignorable_events) {
+    for (const auto& item : valid_events) {
         if (event == item)
-            return true;
+            return false;
     }
 
-    return false;
+    return true;
 }
 
 inline constexpr std::array<std::tuple<std::string_view, int, std::chrono::seconds>, 15>

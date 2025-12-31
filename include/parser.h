@@ -26,4 +26,18 @@ struct CombatEvent {
 CombatEvent ParseLine(const std::string& string);
 std::chrono::time_point<std::chrono::system_clock> ParseTimestamp(const std::string&);
 
+inline std::ostream& operator<<(std::ostream& os, const CombatEvent& event)
+{
+    os << "CombatEvent {\n"
+       << "  event_type: \"" << event.event_type << "\",\n"
+       << "  name: \"" << event.player_name << "\",\n"
+       << "  source_id: \"" << event.source_id << "\",\n"
+       << "  target_id: \"" << event.target_id << "\",\n"
+       << "  source_raid_flag: \"" << event.source_raid_flag << "\",\n"
+       << "  spell_name: \"" << event.spell_name << "\",\n"
+       << "  spell_id: " << event.spell_id << "\n"
+       << "}";
+    return os;
+}
+
 #endif  // SHOTCALLERCPP_PARSER_H
