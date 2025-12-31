@@ -8,7 +8,7 @@ add_executable(ShotCallerEngineWow
     src/main.cpp 
     src/parser.cpp 
     src/engine.cpp 
-    src/spelldb.cpp
+    src/constants.cpp
 )
 
 target_include_directories(ShotCallerEngineWow PUBLIC include)
@@ -27,7 +27,7 @@ FetchContent_MakeAvailable(googletest)
 add_library(engine_lib
     src/parser.cpp 
     src/engine.cpp 
-    src/spelldb.cpp
+    src/constants.cpp
 )
 
 target_include_directories(engine_lib PUBLIC include)
