@@ -7,7 +7,7 @@
 
 namespace Constants {
 
-constexpr std::array<std::pair<int, std::string_view>, 12> identifying_spells{ {
+inline constexpr std::array<std::pair<int, std::string_view>, 12> identifying_spells{ {
     { 48743, "Death Knight" },   // Death's Advance
     { 198013, "Demon Hunter" },  // Eye Beam
     { 1126, "Druid" },           // Mark of the Wild
@@ -32,7 +32,7 @@ constexpr std::string_view GetClassFromIdentifyingSpells(int spell_id)
     return "";
 }
 
-constexpr std::array<std::string_view, 48> ignorable_events{
+inline constexpr std::array<std::string_view, 48> ignorable_events{
     "SWING_DAMAGE",
     "SWING_MISSED",
     "RANGE_DAMAGE",
@@ -93,22 +93,23 @@ constexpr bool IsIgnorableEvent(std::string_view event)
     return false;
 }
 
-const std::array<std::tuple<std::string_view, int, std::chrono::seconds>, 15> interrupt_data{ {
-    { "Death Knight", 47528, std::chrono::seconds{ 15 } },   // Mind Freeze
-    { "Demon Hunter", 183752, std::chrono::seconds{ 15 } },  // Disrupt
-    { "Druid", 78675, std::chrono::seconds{ 60 } },          // Druid (Moonkin)
-    { "Druid", 106839, std::chrono::seconds{ 15 } },         // Skull Bash (Main kick)
-    { "Evoker", 351338, std::chrono::seconds{ 20 } },        // Quell
-    { "Hunter", 187707, std::chrono::seconds{ 15 } },        // Muzzle
-    { "Mage", 2139, std::chrono::seconds{ 24 } },            // Counterspell
-    { "Monk", 116705, std::chrono::seconds{ 15 } },          // Spear Hand Strike
-    { "Paladin", 96231, std::chrono::seconds{ 15 } },        // Rebuke
-    { "Priest", 15487, std::chrono::seconds{ 45 } },         // Silence
-    { "Rogue", 1766, std::chrono::seconds{ 15 } },           // Kick
-    { "Shaman", 57994, std::chrono::seconds{ 12 } },         // Wind Shear
-    { "Warlock", 19647, std::chrono::seconds{ 24 } },        // Spell Lock (Pet)
-    { "Warrior", 6552, std::chrono::seconds{ 15 } }          // Pummel
-} };
+inline constexpr std::array<std::tuple<std::string_view, int, std::chrono::seconds>, 15>
+    interrupt_data{ {
+        { "Death Knight", 47528, std::chrono::seconds{ 15 } },   // Mind Freeze
+        { "Demon Hunter", 183752, std::chrono::seconds{ 15 } },  // Disrupt
+        { "Druid", 78675, std::chrono::seconds{ 60 } },          // Druid (Moonkin)
+        { "Druid", 106839, std::chrono::seconds{ 15 } },         // Skull Bash (Main kick)
+        { "Evoker", 351338, std::chrono::seconds{ 20 } },        // Quell
+        { "Hunter", 187707, std::chrono::seconds{ 15 } },        // Muzzle
+        { "Mage", 2139, std::chrono::seconds{ 24 } },            // Counterspell
+        { "Monk", 116705, std::chrono::seconds{ 15 } },          // Spear Hand Strike
+        { "Paladin", 96231, std::chrono::seconds{ 15 } },        // Rebuke
+        { "Priest", 15487, std::chrono::seconds{ 45 } },         // Silence
+        { "Rogue", 1766, std::chrono::seconds{ 15 } },           // Kick
+        { "Shaman", 57994, std::chrono::seconds{ 12 } },         // Wind Shear
+        { "Warlock", 19647, std::chrono::seconds{ 24 } },        // Spell Lock (Pet)
+        { "Warrior", 6552, std::chrono::seconds{ 15 } }          // Pummel
+    } };
 
 constexpr int GetInterruptId(std::string_view player_class)
 {
@@ -137,7 +138,8 @@ enum class CcEnum : size_t {
     SPELL_CD = 3,
 };
 
-constexpr std::array<std::tuple<std::string_view, std::string_view, int, std::chrono::seconds>, 31>
+inline constexpr std::array<
+    std::tuple<std::string_view, std::string_view, int, std::chrono::seconds>, 31>
     crowd_control_data{
         { { "Death Knight", "Blinding Sleet", 207127, std::chrono::seconds{ 60 } },
           { "Death Knight", "Gorefiend's Grasp", 207167, std::chrono::seconds{ 90 } },

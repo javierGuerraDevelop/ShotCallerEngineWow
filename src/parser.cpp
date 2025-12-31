@@ -12,9 +12,10 @@ using std::vector;
 
 bool HasLetters(const std::string& str)
 {
-    for (unsigned char c : str)
+    for (unsigned char c : str) {
         if (std::isalpha(c))
             return true;
+    }
 
     return false;
 }
