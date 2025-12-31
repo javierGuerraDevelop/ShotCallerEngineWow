@@ -82,7 +82,7 @@ CombatEvent ParseLine(const string& line)
     getline(name_stream, player_name, '-');
     player_name.erase(std::remove(player_name.begin(), player_name.end(), '\"'), player_name.end());
 
-    event.name = player_name;
+    event.player_name = player_name;
     event.source_id = data[1];
     event.source_raid_flag = data[3];
     event.target_id = data[5];
