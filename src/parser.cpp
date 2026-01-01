@@ -1,19 +1,10 @@
 #include "parser.h"
 
-#include <iostream>
-
 #include "constants.h"
 
 namespace ch = std::chrono;
 
 ch::time_point<ch::system_clock> ParseTimestamp(const std::string& timestamp) {
-    // make sure we dont have letters
-    for (unsigned char c : timestamp) {
-        if (std::isalpha(c)) {
-            return {};
-        }
-    }
-
     size_t tz_pos = timestamp.find_last_of("+-");
     if (tz_pos == std::string::npos) {
         return {};
@@ -74,15 +65,14 @@ CombatEvent ParseLine(const std::string& line) {
     player_name.erase(std::remove(player_name.begin(), player_name.end(), '\"'),
                       player_name.end());
 
-    event.player_name = player_name;
-    event.source_id = data[1];
-    event.source_raid_flag = data[3];
-    event.target_id = data[5];
-
     std::string spell_name = data[10];
     spell_name.erase(std::remove(spell_name.begin(), spell_name.end(), '\"'),
                      spell_name.end());
 
+    event.player_name = player_name;
+    event.source_id = data[1];
+    event.source_raid_flag = data[3];
+    event.target_id = data[5];
     event.spell_name = spell_name;
     event.spell_id = std::stoi(data[9]);
 

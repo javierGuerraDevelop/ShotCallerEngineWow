@@ -186,6 +186,7 @@ constexpr std::string_view GetCcName(int id) {
 
     return {};
 }
+
 }  // namespace Constants
 
 #endif  // SHOTCALLERCPP_CONSTANTS_H
