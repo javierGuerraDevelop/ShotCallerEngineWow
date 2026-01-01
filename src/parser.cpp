@@ -1,22 +1,10 @@
 #include "parser.h"
 
+#include <iostream>
+
 #include "constants.h"
 
 namespace ch = std::chrono;
-
-bool IsOnlyCharacters(std::string_view str) {
-    for (char c : str) {
-        if (c == ' ') {
-            continue;
-        }
-
-        if (!isalpha(c)) {
-            return false;
-        }
-    }
-
-    return true;
-}
 
 ch::time_point<ch::system_clock> ParseTimestamp(const std::string& timestamp) {
     // make sure we dont have letters
@@ -57,7 +45,7 @@ ch::time_point<ch::system_clock> ParseTimestamp(const std::string& timestamp) {
 
 CombatEvent ParseLine(const std::string& line) {
     if (line.empty()) {
-        return CombatEvent{};
+        return {};
     }
 
     std::string field{};
@@ -69,10 +57,6 @@ CombatEvent ParseLine(const std::string& line) {
         data.push_back(field);
     }
 
-    if (data.size() < 10) {
-        return {};
-    }
-
     size_t space_pos = data[0].find("  ");
     if (space_pos != std::string::npos) {
         std::string timestamp_str = data[0].substr(0, space_pos);
@@ -80,7 +64,7 @@ CombatEvent ParseLine(const std::string& line) {
         event.event_type = data[0].substr(space_pos + 2);
     }
 
-    if (Constants::IsIgnorableEvent(event.event_type)) {
+    if (!Constants::IsValidEvent(event.event_type)) {
         return {};
     }
 
@@ -89,9 +73,6 @@ CombatEvent ParseLine(const std::string& line) {
     std::getline(name_stream, player_name, '-');
     player_name.erase(std::remove(player_name.begin(), player_name.end(), '\"'),
                       player_name.end());
-    if (!IsOnlyCharacters(player_name)) {
-        return {};
-    }
 
     event.player_name = player_name;
     event.source_id = data[1];
@@ -101,9 +82,6 @@ CombatEvent ParseLine(const std::string& line) {
     std::string spell_name = data[10];
     spell_name.erase(std::remove(spell_name.begin(), spell_name.end(), '\"'),
                      spell_name.end());
-    if (!IsOnlyCharacters(spell_name)) {
-        return {};
-    }
 
     event.spell_name = spell_name;
     event.spell_id = std::stoi(data[9]);

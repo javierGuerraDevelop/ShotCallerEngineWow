@@ -31,9 +31,7 @@ constexpr std::string_view GetClassFromIdentifyingSpells(int spell_id) {
     return "";
 }
 
-inline constexpr std::array<std::string_view, 40> kValidEvents{
-    "SWING_DAMAGE",
-    "SWING_MISSED",
+inline constexpr std::array<std::string_view, 38> kValidEvents{
     "RANGE_DAMAGE",
     "RANGE_MISSED",
     "SPELL_AURA_APPLIED",
@@ -74,14 +72,14 @@ inline constexpr std::array<std::string_view, 40> kValidEvents{
     "UNIT_DISSIPATES",
 };
 
-constexpr bool IsIgnorableEvent(std::string_view event) {
+constexpr bool IsValidEvent(std::string_view event) {
     for (const auto& item : kValidEvents) {
         if (event == item) {
-            return false;
+            return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 inline constexpr std::array<
