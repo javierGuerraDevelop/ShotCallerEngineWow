@@ -1,5 +1,5 @@
-#ifndef SHOTCALLERCPP_PARSER_H
-#define SHOTCALLERCPP_PARSER_H
+#ifndef SHOTCALLERENGINEWOW_PARSER_H
+#define SHOTCALLERENGINEWOW_PARSER_H
 
 #include <chrono>
 #include <string>
@@ -42,4 +42,4 @@ inline std::ostream& operator<<(std::ostream& os, const CombatEvent& event) {
     return os;
 }
 
-#endif  // SHOTCALLERCPP_PARSER_H
+#endif  // SHOTCALLERENGINEWOW_PARSER_H

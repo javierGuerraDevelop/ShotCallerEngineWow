@@ -5,6 +5,12 @@
 namespace ch = std::chrono;
 
 ch::time_point<ch::system_clock> ParseTimestamp(const std::string& timestamp) {
+    for (unsigned char c : timestamp) {
+        if (std::isalpha(c)) {
+            return {};
+        }
+    }
+
     size_t tz_pos = timestamp.find_last_of("+-");
     if (tz_pos == std::string::npos) {
         return {};

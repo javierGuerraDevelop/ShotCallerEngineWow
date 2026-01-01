@@ -1,5 +1,5 @@
-#ifndef SHOTCALLERCPP_CONSTANTS_H
-#define SHOTCALLERCPP_CONSTANTS_H
+#ifndef SHOTCALLERENGINEWOW_CONSTANTS_H
+#define SHOTCALLERENGINEWOW_CONSTANTS_H
 
 #include <array>
 #include <chrono>
@@ -189,4 +189,4 @@ constexpr std::string_view GetCcName(int id) {
 
 }  // namespace Constants
 
-#endif  // SHOTCALLERCPP_CONSTANTS_H
+#endif  // SHOTCALLERENGINEWOW_CONSTANTS_H
