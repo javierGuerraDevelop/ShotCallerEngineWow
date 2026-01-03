@@ -10,56 +10,37 @@
 
 template <typename T>
 struct Event {
-    std::function<void()> func_ptr;
-    std::vector<std::tuple<T>> arguments;
-    std::chrono::steady_clock::time_point execute_time;
+    std::function<void()> func_ptr{};
+    std::vector<std::tuple<T>> arguments{};
+    std::chrono::steady_clock::time_point execute_time{};
     bool is_executed;
 };
 
 struct Shotcall {
-    std::string message;
-    std::chrono::steady_clock::time_point execute_time;
-    bool is_executed;
+    std::string message{};
+    std::chrono::steady_clock::time_point execute_time{};
+    bool is_executed{};
 
-    // operator overload for priority queue ordering
     bool operator>(const Shotcall& other) const {
         return execute_time > other.execute_time;
     }
 };
 
-class Engine {
-   private:
-    std::vector<Shotcall> pipeline_;
-
-   public:
-    void HandleEnemyEvent();
-    void HandlePlayerEvent();
-    void HandlePlayerDeath();
-    void HandleEnemyDeath();
-    void ExecuteShotcall();  // read 2s before to give players time to react
-    void IdentifyEntity();
-
-    Engine() = default;
-    ~Engine() = default;
-    Engine(const Engine&) = delete;
-    Engine& operator=(const Engine) = delete;
-};
-
 struct Ability {
-    int spellid;
-    std::string spellname;
-    std::chrono::seconds cooldown;
-    bool is_ready;
+    int spellid{};
+    std::string spellname{};
+    std::chrono::seconds cooldown{};
+    bool is_ready{};
     std::chrono::time_point<std::chrono::system_clock> on_cooldown_until{};
 
     Ability() {}
 };
 
 struct Player {
-    std::string uuid;
-    std::string name;
-    Ability interrupt;
-    std::array<Ability, 5> cc_arr;
+    std::string uuid{};
+    std::string name{};
+    Ability interrupt{};
+    std::array<Ability, 5> cc_arr{};
     bool is_alive{true};
     bool is_ccd{false};
 
@@ -74,9 +55,30 @@ struct Player {
 };
 
 struct Enemy {
-    std::string uuid;
-    std::string name;
-    std::array<Ability, 5> ability_arr;
+    std::string uuid{};
+    std::string name{};
+    std::array<Ability, 5> ability_arr{};
+};
+
+class Engine {
+   private:
+    std::vector<Shotcall> pipeline_{};
+    void RemoveCc(Player&);
+    void ExecuteShotcall(const Shotcall&);
+    void IdentifyEvent(const CombatEvent&);
+    void HandleEnemyEvent(const CombatEvent&);
+    void HandlePlayerEvent(const CombatEvent&);
+    void HandlePlayerDeath(Player&);
+    void HandleEnemyDeath(Enemy&);
+    void IdentifyEntity(const CombatEvent&);
+
+   public:
+    void RunEngine() {}
+
+    Engine() = default;
+    ~Engine() = default;
+    Engine(const Engine&) = delete;
+    Engine& operator=(const Engine) = delete;
 };
 
 #endif  // SHOTCALLERENGINEWOW_ENGINE_H
