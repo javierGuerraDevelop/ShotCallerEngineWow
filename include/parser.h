@@ -3,16 +3,31 @@
 
 #include <chrono>
 #include <string>
+#include <vector>
+
+class Engine;
+
+class Parser {
+   private:
+    void PushEvent(Engine& engine);
+    void IsValidFilepath(std::string filepath);
+    std::vector<std::string> parsed_lines_{};
+    std::string filepath_{};
+
+   public:
+    void ReadLines();
+    int SetFilepath(std::string filepath);
+};
 
 struct CombatEvent {
-    std::chrono::system_clock::time_point time_stamp;
-    std::string event_type;
-    std::string player_name;
-    std::string source_id;
-    std::string target_id;
-    std::string source_raid_flag;
-    std::string spell_name;
-    int spell_id;
+    std::chrono::system_clock::time_point time_stamp{};
+    std::string event_type{};
+    std::string player_name{};
+    std::string source_id{};
+    std::string target_id{};
+    std::string source_raid_flag{};
+    std::string spell_name{};
+    int spell_id{};
 
     bool operator==(const CombatEvent& other) const {
         return (time_stamp == other.time_stamp) &&

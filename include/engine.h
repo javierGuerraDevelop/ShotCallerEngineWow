@@ -1,12 +1,13 @@
 #include <array>
+#include <chrono>
 #include <functional>
 #include <tuple>
 #include <vector>
 
-#include "parser.h"
-
 #ifndef SHOTCALLERENGINEWOW_ENGINE_H
 #define SHOTCALLERENGINEWOW_ENGINE_H
+
+struct CombatEvent;
 
 template <typename T>
 struct Event {
